@@ -51,14 +51,3 @@ Replace secret_key with your own***
 `pre-commit install`
 
 ------------
-
-### Structure:
-
-DjangoStarterTemplate
-├── docker
-├── requirements
-└── src
-    ├── apps
-    ├── celery_configuration
-    └── project_src
-        └── settings
