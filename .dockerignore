@@ -1,0 +1,16 @@
+# PyCharm
+.idea
+
+# Virtual environment
+.env/
+.venv/
+venv/
+
+# Git
+.git
+.gitignore
+LICENSE
+README.md
+
+# Docker
+docker/
