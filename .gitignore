@@ -1,0 +1,9 @@
+# IDEA (PyCharm)
+.idea
+
+# venv
+.venv
+
+# Base
+src/project_src/settings/local.py
+src/celerybeat-schedule

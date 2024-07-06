@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+  django:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ..:/code
+    command: sh -c "python src/manage.py migrate && python src/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=project_src.settings
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    depends_on:
+      - postgres
+    ports:
+      - "5050:80"
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+
+  celery:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: sh -c "celery -A celery_configuration worker -l info"
+    restart: always
+    depends_on:
+      - redis
+      - django
+    volumes:
+      - ../src:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=project_src.settings
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: sh -c "celery -A celery_configuration beat -l info"
+    restart: always
+    depends_on:
+      - redis
+      - django
+    volumes:
+      - ../src:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=project_src.settings
+
+  flower:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: sh -c "celery -A celery_configuration flower -l info"
+    volumes:
+      - ../src:/code
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - django
+    environment:
+      - DJANGO_SETTINGS_MODULE=project_src.settings
