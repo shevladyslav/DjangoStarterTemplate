@@ -49,3 +49,16 @@ Replace secret_key with your own***
 5. Install pre-commit hooks:
 
 `pre-commit install`
+
+------------
+
+### Structure:
+
+DjangoStarterTemplate
+├── docker
+├── requirements
+└── src
+    ├── apps
+    ├── celery_configuration
+    └── project_src
+        └── settings
